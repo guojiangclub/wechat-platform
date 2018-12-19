@@ -32,3 +32,32 @@ function is_color($str){
    return preg_match($exp,$str);
 
 }
+
+if (!function_exists('Hashids_encode')) {
+
+    function Hashids_encode($id,$connections='main')
+    {
+        $salt=config('hashids.connections.'.$connections.'.salt');
+
+        if(!$salt) return null;
+
+        return \Vinkla\Hashids\Facades\Hashids::connection($connections)->encode($id);
+
+    }
+}
+
+
+if (!function_exists('Hashids_decode')) {
+
+    function Hashids_decode($id,$connections='main')
+    {
+        $salt=config('hashids.connections.'.$connections.'.salt');
+
+        if(!$salt) return null;
+
+        $decode=\Vinkla\Hashids\Facades\Hashids::connection($connections)->decode($id);
+
+        return isset($decode[0])?$decode[0]:null;
+
+    }
+}

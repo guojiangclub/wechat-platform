@@ -11,6 +11,7 @@
         "ibrand/setting": "^1.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
+        "vinkla/hashids": "~3.3",
         "wikimedia/composer-merge-plugin": "^1.4"
     },
     "require-dev": {

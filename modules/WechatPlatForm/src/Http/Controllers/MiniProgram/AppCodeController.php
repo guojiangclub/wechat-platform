@@ -68,7 +68,7 @@ class AppCodeController extends Controller
         $data = request()->json()->all();
 
         // 授权
-        $server = $this->platform->miniProgramAPI($appid);
+        $server = $this->platform->miniProgramAPI($appid);;
 
         // 调用接口
         $result = $server->app_code->getUnlimit($data['scene'], $data['optional']);

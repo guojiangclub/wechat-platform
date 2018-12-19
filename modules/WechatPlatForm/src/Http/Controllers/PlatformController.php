@@ -62,7 +62,11 @@ class PlatformController extends Controller
 
         $authCode = request('authCode');
 
-        $callback = route('component.auth.result', ['client_id' => $clientId]);
+        $application_id=request('application_id');
+
+        $call_back_url=request('call_back_url');
+
+        $callback = route('component.auth.result', ['client_id' => $clientId,'application_id'=>$application_id,'call_back_url'=>$call_back_url]);
 
         $url = $this->platformService->authRedirectUrl($callback);
 
@@ -87,6 +91,15 @@ class PlatformController extends Controller
         if ($clientId = request('client_id')) {
             $authorizer->client_id = $clientId;
             $authorizer->save();
+
+        }
+
+        if($url=request('call_back_url') AND $application_id=request('application_id')){
+            $url=$url.'?authorizer_id='.$authorizer->id
+                .'&application_id='.$application_id
+                .'&appid='.$authorizer->appid
+                .'&uuid='.Hashids_encode($authorizer->id,'ibrand_saas');
+            return redirect($url);
         }
 
         return '授权成功！';
