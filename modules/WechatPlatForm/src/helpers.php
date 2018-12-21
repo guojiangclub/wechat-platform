@@ -33,6 +33,7 @@ function is_color($str){
 
 }
 
+
 if (!function_exists('Hashids_encode')) {
 
     function Hashids_encode($id,$connections='main')
@@ -41,7 +42,16 @@ if (!function_exists('Hashids_encode')) {
 
         if(!$salt) return null;
 
-        return \Vinkla\Hashids\Facades\Hashids::connection($connections)->encode($id);
+        $prefix=config('hashids.connections.'.$connections.'.prefix');
+
+        $code=\Vinkla\Hashids\Facades\Hashids::connection($connections)->encode($id);
+
+        if($prefix){
+
+            return $prefix.$code;
+        }
+
+        return $code;
 
     }
 }
@@ -49,15 +59,43 @@ if (!function_exists('Hashids_encode')) {
 
 if (!function_exists('Hashids_decode')) {
 
-    function Hashids_decode($id,$connections='main')
+    function Hashids_decode($str,$connections='main')
     {
         $salt=config('hashids.connections.'.$connections.'.salt');
 
         if(!$salt) return null;
 
-        $decode=\Vinkla\Hashids\Facades\Hashids::connection($connections)->decode($id);
+        $prefix=config('hashids.connections.'.$connections.'.prefix');
+
+        if($prefix){
+
+            $str=substr($str,strlen($prefix),strlen($str));
+        }
+
+        $decode=\Vinkla\Hashids\Facades\Hashids::connection($connections)->decode($str);
 
         return isset($decode[0])?$decode[0]:null;
 
     }
 }
+
+function ibrand_count($obj){
+
+    if(is_array($obj)){
+        return count($obj);
+    }
+
+    if(is_object($obj)){
+
+        return $obj->count();
+    }
+
+    if($obj){
+
+        return 1;
+    }
+
+    return 0;
+
+}
+
