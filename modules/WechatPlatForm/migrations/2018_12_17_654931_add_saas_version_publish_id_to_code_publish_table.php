@@ -22,6 +22,7 @@ class AddSaasVersionPublishIdToCodePublishTable extends Migration
     {
         Schema::table('code_publish', function (Blueprint $table) {
             $table->integer('saas_version_publish_id')->nullable();
+            $table->text('category')->nullable();
 
         });
     }
@@ -32,7 +33,7 @@ class AddSaasVersionPublishIdToCodePublishTable extends Migration
     public function down()
     {
         Schema::table('code_publish', function (Blueprint $table) {
-            $table->dropColumn(['saas_version_publish_id']);
+            $table->dropColumn(['saas_version_publish_id','category']);
         });
     }
 }

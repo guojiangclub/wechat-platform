@@ -123,5 +123,34 @@ $router->group(['prefix' => 'wechat_platform'], function ($router) {
 
         });
 
+        $router->group(['prefix' => 'saas'], function ($router) {
+
+            $router->get('/', 'SaasController@index')->name('admin.mini.saas.index');
+
+            $router->get('/create', 'SaasController@create')->name('admin.mini.saas.create');
+
+            $router->post('/store', 'SaasController@store')->name('admin.mini.saas.store');
+
+            $router->post('/delete/{id}', 'SaasController@delete')->name('admin.mini.saas.delete');
+
+            $router->get('/edit/{id}', 'SaasController@edit')->name('admin.mini.saas.edit');
+
+            $router->post('/update', 'SaasController@update')->name('admin.mini.saas.update');
+
+
+            $router->group(['prefix' => 'publish'], function ($router) {
+
+                $router->get('/', 'SaasPublishController@index')->name('admin.mini.saas.publish.index');
+
+                $router->get('/create', 'SaasPublishController@create')->name('admin.mini.saas.publish.create');
+
+                $router->post('/store', 'SaasPublishController@store')->name('admin.mini.saas.publish.store');
+
+
+            });
+
+
+        });
+
     });
 });

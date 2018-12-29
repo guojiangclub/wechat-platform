@@ -45,6 +45,8 @@ class CodeController extends Controller
         // 授权
         $server = $this->platform->miniProgramAPI($appid);
 
+        $data['ext_json'] = json_encode($data['ext_json'], true);
+
         // 调用接口
         $result = $server->code->commit($data['template_id'], $data['ext_json'], $data['user_version'], $data['user_desc']);
 

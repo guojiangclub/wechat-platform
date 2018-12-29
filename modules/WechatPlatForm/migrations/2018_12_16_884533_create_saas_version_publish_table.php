@@ -26,15 +26,17 @@ class CreateSaasVersionPublishTable extends Migration
 
             $table->string('saas_version_code');
 
+            $table->integer('saas_version_id');
+
             $table->integer('status')->default(1);
 
             $table->string('name');
 
-            $table->string('title')->nullable();
-
+            $table->string('version');
 
             $table->string('template_id');
 
+            $table->text('template_info');
 
             $table->string('mini_address')->nullable();
 
@@ -42,8 +44,9 @@ class CreateSaasVersionPublishTable extends Migration
 
             $table->string('mini_tag')->nullable();
 
-
             $table->text('description')->nullable();
+
+            $table->string('trial_version_img')->nullable();
 
             $table->text('note')->nullable();
 

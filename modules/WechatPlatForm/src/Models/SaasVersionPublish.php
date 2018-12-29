@@ -13,10 +13,9 @@ namespace iBrand\Wechat\Platform\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AuthorizerApplication extends Model
+class SaasVersionPublish extends Model
 {
-    protected $table = 'authorizers_application';
+    protected $table = 'saas_version_publish';
 
     protected $guarded = ['id'];
-
 }

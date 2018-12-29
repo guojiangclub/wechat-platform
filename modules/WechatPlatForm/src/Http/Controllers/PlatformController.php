@@ -14,6 +14,7 @@ namespace iBrand\Wechat\Platform\Http\Controllers;
 use iBrand\Wechat\Platform\Models\Clients;
 use iBrand\Wechat\Platform\Services\PlatformService;
 use iBrand\Wechat\Platform\Repositories\AuthorizerApplicationRepository;
+use iBrand\Wechat\Platform\Models\AuthorizerApplication;
 
 /**
  * Class PlatformController.
@@ -24,12 +25,18 @@ class PlatformController extends Controller
 
     protected $authorizerApplicationRepository;
 
+    protected $authorizerRepository;
+
     public function __construct(
         PlatformService $platformService
         , AuthorizerApplicationRepository $authorizerApplicationRepository
-    ) {
+
+    )
+    {
+
         $this->platformService = $platformService;
-        $this->authorizerApplicationRepository=$authorizerApplicationRepository;
+        $this->authorizerApplicationRepository = $authorizerApplicationRepository;
+
     }
 
     /**
@@ -67,14 +74,14 @@ class PlatformController extends Controller
 
         $authCode = request('authCode');
 
-        $application_id=request('application_id');
+        $application_id = request('application_id');
 
-        $application_type=request('application_type');
+        $application_type = request('application_type');
 
-        $call_back_url=request('call_back_url');
+        $call_back_url = request('call_back_url');
 
 
-        $callback_data=['client_id' => $clientId,'application_id'=>$application_id,'application_type'=>$application_type,'call_back_url'=>$call_back_url];
+        $callback_data = ['client_id' => $clientId, 'application_id' => $application_id, 'application_type' => $application_type, 'call_back_url' => $call_back_url];
 
         $callback = route('component.auth.result', $callback_data);
 
@@ -105,34 +112,38 @@ class PlatformController extends Controller
 
         }
 
-        if($url=request('call_back_url')
-            AND $application_type=request('application_type')
-            AND $application_id=request('application_id')){
+        if ($url = request('call_back_url')
+            AND $application_type = request('application_type')
+            AND $application_id = request('application_id')) {
 
 
-            $authorizerApplication=$this->authorizerApplicationRepository->firstOrCreate(['appid'=>$authorizer->appid]);
+            $authorizerApplication = $this->authorizerApplicationRepository
+                ->firstOrCreate(['application_id' => $application_id]);
 
-            if($authorizerApplication->application_type AND $authorizerApplication->application_type!=$application_type){
-                return $authorizer->appid.'已绑定其他应用，授权失败！';
+            if ($authorizerApplication->appid AND $authorizerApplication->application_type != $application_type) {
+
+                return $authorizer->appid . '已绑定其他应用，授权失败！';
             }
 
-            $authorizerApplication->application_type=$application_type;
+            $authorizerApplication->application_type = $application_type;
 
-            $authorizerApplication->application_id=$application_id;
+            $authorizerApplication->application_id = $application_id;
 
-            $authorizerApplication->saas_version_code='ibrand_saas_'.$application_type.'_v1';
+            $authorizerApplication->saas_version_code = 'ibrand_saas_' . $application_type . '_v1';
 
-            $uuid=Hashids_encode($authorizerApplication->id,'ibrand_saas');
+            $uuid = Hashids_encode($authorizerApplication->id, 'ibrand_saas');
 
-            $authorizerApplication->uuid=$uuid;
+            $authorizerApplication->uuid = $uuid;
+
+            $authorizerApplication->appid = $authorizer->appid;
 
             $authorizerApplication->save();
 
-            $url=$url.'?authorizer_id='.$authorizerApplication->id
-                .'&application_type='.$application_type
-                .'&application_id='.$application_id
-                .'&appid='.$authorizer->appid
-                .'&uuid='.$uuid;
+            $url = $url . '?authorizer_id=' . $authorizerApplication->id
+                . '&application_type=' . $application_type
+                . '&application_id=' . $application_id
+                . '&appid=' . $authorizer->appid
+                . '&uuid=' . $uuid;
 
             return redirect($url);
         }
@@ -152,11 +163,29 @@ class PlatformController extends Controller
 
         $client_secret = request('client_secret');
 
+        $appid=request('appid');
+
+        $filter_arr=[];
+
+        if($filter=env('SAAS_TOKEN_FILTER_APP_ID')){
+
+            $filter_arr=explode(',',$filter);
+
+        }
+
+        if ($clientId == env('SAAS_WECHAT_API_CLIENT_ID') AND !in_array($appid,$filter_arr)) {
+
+            $authorizer_application = AuthorizerApplication::where('appid', $appid)->where('uuid', request('uuid'))->first();
+
+            if (!$authorizer_application) return $this->api([], false, 400, '缺少参数');
+        }
+
+
         $client = Clients::where('id', $clientId)->where('secret', $client_secret)->first();
 
         if (!$client) {
             return response()
-            ->json(['token_type' => 'Bearer', 'access_token' => '']);
+                ->json(['token_type' => 'Bearer', 'access_token' => '']);
         }
 
         $token = $client->createToken($client->secret)->accessToken;

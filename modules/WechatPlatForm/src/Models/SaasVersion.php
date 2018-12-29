@@ -13,10 +13,15 @@ namespace iBrand\Wechat\Platform\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AuthorizerApplication extends Model
+class SaasVersion extends Model
 {
-    protected $table = 'authorizers_application';
+    protected $table = 'saas_version';
 
     protected $guarded = ['id'];
 
+    public function publish()
+    {
+        return $this->hasMany(SaasVersionPublish::class,'saas_version_code','code');
+
+    }
 }

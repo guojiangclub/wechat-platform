@@ -24,11 +24,11 @@ class CreateAuthorizersApplicationTable extends Migration
 
             $table->increments('id');
 
-            $table->string('appid');
+            $table->string('appid')->nullable();
 
             $table->string('uuid')->nullable();
 
-            $table->integer('application_id')->nullable();
+            $table->integer('application_id');
 
             $table->string('application_type')->nullable();
 

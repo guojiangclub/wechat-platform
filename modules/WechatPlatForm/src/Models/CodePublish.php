@@ -28,4 +28,9 @@ class CodePublish extends Model
     protected $table = 'code_publish';
 
     protected $guarded = ['id'];
+
+    public function saas(){
+
+        return $this->hasOne(SaasVersionPublish::class,'id','saas_version_publish_id');
+    }
 }

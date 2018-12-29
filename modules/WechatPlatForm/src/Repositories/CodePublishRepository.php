@@ -33,7 +33,7 @@ class CodePublishRepository extends BaseRepository
     public function getAuditByAppID($appid)
     {
         return $this->model->where('appid', $appid)
-            ->orderBy('audit_time', 'desc')->first();
+            ->orderBy('audit_time', 'desc')->with('saas')->first();
     }
 
     /**
@@ -70,6 +70,32 @@ class CodePublishRepository extends BaseRepository
 
         return $query->orderBy('audit_time', 'desc')->paginate($limit);
     }
+
+    /**
+     * @param $appid
+     * @param array $status
+     * @param null $limit
+     * @return mixed
+     */
+    public function getVersionByAppID($appid,$status=[],$all=null)
+    {
+        $query = $this->model->where('appid', $appid)->whereNotNull('saas_version_publish_id');
+
+        $query=$query->with('saas');
+
+        if(is_array($status) AND count($status)){
+
+            $query=$query->whereIn('status',$status);
+        }
+
+        if($all){
+
+            return $query->orderBy('audit_time', 'desc')->get();
+        }
+
+        return $query->orderBy('audit_time', 'desc')->first();
+    }
+
 
     /**
      * @param $audit

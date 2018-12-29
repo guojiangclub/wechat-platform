@@ -317,6 +317,11 @@ class MessageService
                             break;
                     }
 
+
+                    if(isset($item['unverified'])){
+                        return $message;
+                    }
+
                     $server->customer_service->message($message)->to($item['open_id'])->send();
                 }
             }

@@ -106,6 +106,7 @@ class MiniProgramController extends Controller
         $filter = $this->domainService->filterDomain($domain, $local);
 
         if (count($filter) > 0) {
+
             //修改服务器域名覆盖
             $filter['action'] = 'set';
 
@@ -122,6 +123,7 @@ class MiniProgramController extends Controller
         $type = request('type');
 
         if (!empty($type)) {
+
             $system_mini_template_str = 'system_mini_' . $type . '_template';
 
             $system_mini_template = settings($system_mini_template_str);

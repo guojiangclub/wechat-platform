@@ -81,6 +81,10 @@ class DomainService
      */
     public function filterDomain(array $domain, array $local)
     {
+        //dd($domain);
+
+        //dd($local);
+
         $data = [];
 
         foreach ($domain as $k => $item) {
@@ -88,7 +92,6 @@ class DomainService
                 foreach ($local[$k] as $litem) {
                     if (!in_array($litem, $domain[$k])) {
                         //$data[$k]=$local[$k];
-
                         $data = $local;
                     }
                 }

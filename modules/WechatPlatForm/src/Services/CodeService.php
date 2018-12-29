@@ -94,6 +94,7 @@ class CodeService
      */
     public function getAppAuditStatus($appid)
     {
+
         $audit = $this->codePublishRepository->getAuditByAppID($appid);
 
         if (!$audit) {

@@ -393,5 +393,27 @@ $router->group(['middleware' => ['client', 'parameter']], function () use ($rout
             $router->post('/', 'BaseController@decryptedData');
         });
 
+
+        //Saas
+        $router->group(['prefix' => 'saas'], function ($router) {
+            $router->get('/version', 'SaasController@getVersion');
+            $router->post('/tester/bind', 'SaasController@testerBind');
+            $router->post('/tester/unbind', 'SaasController@testerunBind');
+            $router->get('/version/model', 'SaasController@themeModel');
+            $router->post('/version/submitAudit', 'SaasController@submitAudit');
+            //小程序审核撤回
+            $router->get('/version/withdrawAudit', 'SaasController@withdrawAudit');
+            //取消发布
+            $router->get('/version/reexamination', 'SaasController@Reexamination');
+            //发布上线
+            $router->get('/version/release', 'SaasController@release');
+
+            $router->get('/version/log', 'SaasController@sendLog');
+
+
+        });
+
+
+
     });
 });
